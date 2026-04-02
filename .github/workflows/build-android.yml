@@ -1,0 +1,46 @@
+name: android-build
+
+on: [push, pull_request]
+
+jobs:
+  build-apk-for-android:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Cloning modlaucher repo and preparing for building
+      run: |
+        sudo apt-get update
+        sudo apt-get install -f -y openjdk-8-jre zip apksigner imagemagick zlib1g libc6 libstdc++6 libopenal-dev g++-multilib gcc-multilib libpng-dev libjpeg-dev libfreetype6-dev libfontconfig1-dev libcurl4-gnutls-dev libsdl2-dev zlib1g-dev libbz2-dev libedit-dev
+    - name: Build Android (32 bit)
+      run: |
+        scripts/build-android-armv7a.sh
+    - name: Build Android (64 bit)
+      run: |
+        chmod +x scripts/build-android-aarch64.sh
+        scripts/build-android-aarch64.sh   
+
+    - name: 'Upload arm64 server Artifact'
+      uses: actions/upload-artifact@v4
+      with:
+        name: arm64-server
+        path: /home/runner/work/source-engine/source-engine/srceng-mod-launcher/android/lib/arm64-v8a/libserver.so
+
+    - name: 'Upload arm32 server Artifact'
+      uses: actions/upload-artifact@v4
+      with:
+        name: arm32-server
+        path: /home/runner/work/source-engine/source-engine/srceng-mod-launcher/android/lib/armeabi-v7a/libserver.so
+
+    - name: 'Upload arm64 client Artifact'
+      uses: actions/upload-artifact@v4
+      with:
+        name: arm64-client
+        path: /home/runner/work/source-engine/source-engine/srceng-mod-launcher/android/lib/arm64-v8a/libclient.so
+
+    - name: 'Upload arm32 client Artifact'
+      uses: actions/upload-artifact@v4
+      with:
+        name: arm32-client
+        path: /home/runner/work/source-engine/source-engine/srceng-mod-launcher/android/lib/armeabi-v7a/libclient.so
+
