@@ -1241,7 +1241,9 @@ void CTFBot::AvoidPlayers( CUserCmd *pCmd )
 
 	m_Shared.SetSeparation( true );
 
-	const float maxSpeed = 50.0f;
+	//hahayoutookind: Try to fix bots speed?
+	const float maxSpeed = GetPlayerClassData(m_PlayerClass)->m_flMaxSpeed;
+	m_flMaxSpeed = maxSpeed;
 	m_Shared.SetSeparationVelocity( avoidVector * maxSpeed );
 
 	float ahead = maxSpeed * DotProduct( forward, avoidVector );
